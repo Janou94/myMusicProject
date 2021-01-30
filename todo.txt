@@ -4,7 +4,7 @@
 
 3) Un accord par teamps [x]
 
-4) Plus de variété Accords []?
+4) Plus de variété Accords add more rythm option (won't ever be done, continuous dev)
 
 5) drag n drop des accords à jouer []
 
@@ -34,4 +34,15 @@
 
 18) make different chord instrument available []
 
-19) improve different percussion rythm[]
+19) improve different percussion rythm []
+
+20) BIG : ability to have different sized MusicButton to represent beats (One line = 16 beat, on current button = 4 beat so 1/4 of the line) follow this logic,and being able to pick how many beat should last the button you press []
+
+21) add saving for Percussion AND rythm [x]
+
+22) BIG : add basslineMaker []
+
+23: BIG : add melodyMaker []
+
+
+
