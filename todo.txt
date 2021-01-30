@@ -4,7 +4,7 @@
 
 3) Un accord par teamps [x]
 
-4) Plus de variété Accords []
+4) Plus de variété Accords []?
 
 5) drag n drop des accords à jouer []
 
@@ -19,3 +19,19 @@
 10) limit saves names [x]
 
 11) volume knob for music [x]
+
+12) make volume not so extreme [x]
+
+13) better rythm []
+
+14) ability to choose different rythm[]
+
+15) make button played their chord [x]
+
+16) ability to pick some percussions [X]
+
+17) improve percussions rythm []
+
+18) make different chord instrument available []
+
+19) improve different percussion rythm[]

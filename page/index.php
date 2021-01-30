@@ -26,7 +26,7 @@ else $chordsToLoad="";
             </div>
                 <div class='card-body graycard'>
                 <div style='float:left;bottom:10px;margin-left:20px;position: relative;'>
-               Chord type : <select class='form-select'   id='chordtype'>
+               Chord type : <select class='form-select' style='margin-right:10px'  id='chordtype'>
                   <option selected> maj </option>
                   <option> min </option>
                   <option> maj7 </option>
@@ -34,9 +34,14 @@ else $chordsToLoad="";
                   <option> dom7 </option>
                   <option> min7b5 </option>
                   <option> 6 </option>
-
-                </select></div>
+                </select>
+                Rythm type : <select class='form-select' id='rythmtype'>
+                <option selected> Folk </option>
+                <option> Normal </option>
+                </select>
+                </div>
                <div style='float:right;margin-right:20px;position:relative;bottom:10px'>
+               Percussion : <input type='checkbox' id='percussion' style='margin-right:10px'>
                  BPM : <input type='range' min='60' max='200' id='bpmslider'> <span id='bpmcount'> 130</span>
                 </div>
 
@@ -92,8 +97,6 @@ else $chordsToLoad="";
                 </span>
                 </div></div>
                  ";
-
-
 
 ?>
 
@@ -158,6 +161,7 @@ else $chordsToLoad="";
         var chordsToPlay=[];
         var BPM=document.getElementById("bpmslider").value;
         const now = Tone.now();
+        var rythmtype=document.getElementById('rythmtype').value;
 
         for (const element of chordTab){
             chord=element.children[0].value+"";
@@ -220,23 +224,44 @@ else $chordsToLoad="";
 
          const synth = new Tone.PolySynth().toDestination();
          var Time=new Tone.Time("4n");
+         var Time2=new Tone.Time("8n");
          var compteur = 0;
          Tone.Transport.bpm.value=BPM;
          
          for (const element of chordsToPlay) {
+            if (rythmtype=="Folk") {
                 loopers[compteur] = new Tone.Loop(function(time) {
+                synth.triggerAttackRelease(element,Time);
+                synth.triggerAttackRelease(element,Time,"+"+Time);
+                synth.triggerAttackRelease(element,Time,"+"+(Time*2.5));
+                synth.triggerAttackRelease(element,Time,"+"+(Time*3));
+                synth.triggerAttackRelease(element,Time,"+"+(Time*3.5));
 
+                }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
+                compteur++;
+            }
+            if (rythmtype=="Normal") {
+                loopers[compteur] = new Tone.Loop(function(time) {
                 synth.triggerAttackRelease(element,Time);
                 synth.triggerAttackRelease(element,Time,"+"+Time);
                 synth.triggerAttackRelease(element,Time,"+"+(Time*2));
                 synth.triggerAttackRelease(element,Time,"+"+(Time*3));
 
+
                 }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
                 compteur++;
+            }
          }
+        if (document.getElementById('percussion').checked==true){
+                const percu = new Tone.MembraneSynth().toDestination();
+                var looper2=new Tone.Loop(function(time) {
+                    percu.triggerAttackRelease("C1", "8n");
+                }, Time).start(0);
+                percu.volume.value=(document.getElementById('volumeKnob').value/10)*2;
+        }
 
         let playing = false;
-        synth.volume.value=document.getElementById('volumeKnob').value;
+        synth.volume.value=document.getElementById('volumeKnob').value/10;
         Tone.Transport.start();
     }
 
@@ -294,6 +319,66 @@ else $chordsToLoad="";
         });
     });
 
+    function playMe(button) {
+        var notes=["A4","A#4","B4","C4","C#4","D4","D#4","E4","F4","F#4","G4","G#4"];
+        var chord=button.value+"";
+        console.log(button.value);
+        var basenote=chord.split(" ")[0];
+        var chordtype=chord.split(" ")[1];
+
+            if (chordtype=="maj"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12]];
+                console.log(oneChordToPlay);
+            }
+            if (chordtype=="min"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+3;
+                var thirdnote=firstnote+7;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12]];
+            }
+            if (chordtype=="maj7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+11;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="min7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+3;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="dom7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="min7b5"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+3;
+                var thirdnote=firstnote+6;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+                console.log(oneChordToPlay);
+            }
+            if (chordtype=="6"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+9;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+
+        const synth = new Tone.PolySynth().toDestination();
+        synth.triggerAttackRelease(oneChordToPlay,"4n");
+    }
 
 
 </script>
@@ -349,6 +434,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("A").id;
         var text = document.createTextNode(texty+chordtype);
@@ -376,6 +462,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("A#").id;
         var text = document.createTextNode(texty+chordtype);
@@ -402,6 +489,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("B").id;
         var text = document.createTextNode(texty+chordtype);
@@ -428,6 +516,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("C").id;
         var text = document.createTextNode(texty+chordtype);
@@ -454,6 +543,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("C#").id;
         var text = document.createTextNode(texty+chordtype);
@@ -480,6 +570,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("D").id;
         var text = document.createTextNode(texty+chordtype);
@@ -506,6 +597,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("D#").id;
         var text = document.createTextNode(texty+chordtype);
@@ -532,6 +624,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("E").id;
         var text = document.createTextNode(texty+chordtype);
@@ -558,6 +651,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("F").id;
         var text = document.createTextNode(texty+chordtype);
@@ -584,6 +678,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("F#").id;
         var text = document.createTextNode(texty+chordtype);
@@ -610,6 +705,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("G").id;
         var text = document.createTextNode(texty+chordtype);
@@ -636,6 +732,7 @@ else $chordsToLoad="";
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
+        button.setAttribute("onclick","playMe(this)");
 
         var texty =document.getElementById("G#").id;
         var text = document.createTextNode(texty+chordtype);
