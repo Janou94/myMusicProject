@@ -22,6 +22,7 @@ function writehead() {
 	echo "<script type='text/javascript' src='../js/Tone.js'></script>\n";
 	echo "<script type='text/javascript' src='../js/rangeslider.js'></script>\n";
 	echo "<script type='text/javascript' src='../js/rangeslider.min.js'></script>\n";
+	echo "<script type='text/javascript' src='../js/jquery.knob.js'></script>\n";
 }
 ?>
 

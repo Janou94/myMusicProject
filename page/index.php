@@ -29,6 +29,12 @@ else $chordsToLoad="";
                Chord type : <select class='form-select'   id='chordtype'>
                   <option selected> maj </option>
                   <option> min </option>
+                  <option> maj7 </option>
+                  <option> min7 </option>
+                  <option> dom7 </option>
+                  <option> min7b5 </option>
+                  <option> 6 </option>
+
                 </select></div>
                <div style='float:right;margin-right:20px;position:relative;bottom:10px'>
                  BPM : <input type='range' min='60' max='200' id='bpmslider'> <span id='bpmcount'> 130</span>
@@ -72,8 +78,9 @@ else $chordsToLoad="";
 
           echo "<div class='card-footer noBorder end'>
                 <span class='players'>
-                    <button type='button' id='playmusic' class='btn btn-light'><i class='fas fa-play'></i></button>
-                    <button type='button' id='stopmusic' style='display:none' class='btn btn-light'><i class='fa fa-pause'></i></button>
+                <span  style='margin-right:10px'><input class='dial' id='volumeKnob' value='0'></span>
+                    <button type='button' id='playmusic' style='margin-top:-35px' class='btn btn-light'><i class='fas fa-play'></i></button>
+                    <button type='button' id='stopmusic' style='display:none;margin-top:-35px' class='btn btn-light'><i class='fa fa-pause'></i></button>
                 </span>
 
                 
@@ -81,11 +88,12 @@ else $chordsToLoad="";
                 <span style ='float:left;margin-left:20px'>
                     <button type='button' id='trashchord' class ='btn btn-light'><i class='fas fa-trash'></i></button>
                     <button type='button' id='savechords' onClick='saveChords()' class ='btn btn-light'><i class='fas fa-save'></i></button>
-                    <input type='text' id='mySaveName' style ='position:relative;top:2px;height:30px;'value='MyChordProgression'>
+                    <input type='text' size='20' maxlength='19' id='mySaveName' style ='position:relative;top:2px;height:30px;'value='MyChordProgression'>
                 </span>
-                </div>
+                </div></div>
+                 ";
 
-                 </div>";
+
 
 ?>
 
@@ -129,7 +137,9 @@ else $chordsToLoad="";
     }
 
     document.getElementById("trashchord").onclick=function(){
-       document.getElementById("playednote").innerHTML = "";
+        document.getElementById("playednote").innerHTML = "";
+        document.getElementById("bpmslider").value=130;
+        document.getElementById("bpmcount").textContent=130;
     }
 
     document.getElementById("bpmslider").onchange=function(){
@@ -166,6 +176,44 @@ else $chordsToLoad="";
                 var thirdnote=firstnote+7;
                 var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12]];
             }
+            if (chordtype=="maj7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+11;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="min7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+3;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="dom7"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+            if (chordtype=="min7b5"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+3;
+                var thirdnote=firstnote+6;
+                var fourthnote=firstnote+10;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+                console.log(oneChordToPlay);
+            }
+            if (chordtype=="6"){
+                var firstnote=notes.indexOf(basenote+"4");
+                var secondnote=firstnote+4;
+                var thirdnote=firstnote+7;
+                var fourthnote=firstnote+9;
+                var oneChordToPlay=[notes[firstnote%12],notes[secondnote%12],notes[thirdnote%12],notes[fourthnote%12]];
+            }
+
+
 
             chordsToPlay.push(oneChordToPlay);
         }
@@ -188,6 +236,7 @@ else $chordsToLoad="";
          }
 
         let playing = false;
+        synth.volume.value=document.getElementById('volumeKnob').value;
         Tone.Transport.start();
     }
 
@@ -210,6 +259,42 @@ else $chordsToLoad="";
             element.dispose();
         }
     }
+
+    document.getElementById('mySaveName').onfocus=function(){
+        if (this.value=="MyChordProgression") {
+            this.value="";
+        }
+
+    }
+
+    document.getElementById('mySaveName').onfocusout=function(){
+        if (this.value=="") {
+            this.value="MyChordProgression";
+        }
+
+    }
+
+    document.getElementById("mySaveName").onkeypress = function(event) {
+        var regex = new RegExp("^[a-zA-Z0-9]+$");
+        var key = String.fromCharCode(!event.charCode ? event.which : event.charCode);
+        if (!regex.test(key)) {
+           event.preventDefault();
+           return false;
+        }
+    };
+
+    $(function(){
+        $(".dial").knob({
+            'height':40,
+            'width':40,
+            'max':50,
+            'min':-50,
+            'fgColor':'black'
+
+        });
+    });
+
+
 
 </script>
 

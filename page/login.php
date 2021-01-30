@@ -30,8 +30,8 @@ else $error=0;
 
           echo "</div>
           <div class='card-footer'>
-                <button type='submit' class='btn btn-light players'>Login</button>
-                <button type='button' class='btn btn-light players' onclick='location.href=\"newAccount.php\"'>New account</button>
+                <button type='submit' class='btn btn-light'>Login</button>
+                <button type='button' class='btn btn-light' onclick='location.href=\"newAccount.php\"'>New account</button>
           </div>
           </form>
           </div>";

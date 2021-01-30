@@ -27,8 +27,8 @@ else $error=0;
 
           echo "</div>
           <div class='card-footer'>
-                <button type='submit' class='btn btn-light players'>Create</button>
-                <button type='button' class='btn btn-light players' onclick='location.href=\"login.php\"'>Return</button>
+                <button type='submit' class='btn btn-light'>Create</button>
+                <button type='button' class='btn btn-light' onclick='location.href=\"login.php\"'>Return</button>
           </div>
           </form>
           </div>";

@@ -13,3 +13,9 @@
 7) being able to name saves[X]
 
 8) being able to choose BPM more precisely []
+
+9) can't write special characters in save name [x]
+
+10) limit saves names [x]
+
+11) volume knob for music [x]
