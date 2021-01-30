@@ -1,0 +1,15 @@
+1) Play Pause fonctionnel [x]
+
+2) Sauvegarde et chargement d'accords via BDD [x]
+
+3) Un accord par teamps [x]
+
+4) Plus de variété Accords []
+
+5) drag n drop des accords à jouer []
+
+6) key selector []
+
+7) being able to name saves[X]
+
+8) being able to choose BPM more precisely []
