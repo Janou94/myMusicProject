@@ -1,10 +1,4 @@
-<script>
-  
-</script>
-
 <?php
-
-
 include("../fct/fonctions.php");
 $notes=["A","B","C","D","E","F","G"];
 writehead();
@@ -14,9 +8,9 @@ else $BPM=0;
 if (isset($_GET['chordsToLoad'])) $chordsToLoad=$_GET['chordsToLoad'];
 else $chordsToLoad="";
 if (isset($_GET['percussion'])) $percussion=$_GET['percussion'];
-else $percussion="false";
+else $percussion="None";
 if (isset($_GET['rythm'])) $rythm=$_GET['rythm'];
-else $rythm="Folk";
+else $rythm="Once";
 
     echo "<div class='graydisplay'><div align=center> Hello ".$_SESSION['login']." !</div>
     <button type='button' class='btn btn-light' style ='width:80px'onclick='location.href=\"../page/savedChords.php\"'>Load</button><br>
@@ -29,7 +23,30 @@ else $rythm="Folk";
             <div class='card-title'><strong> Music tab </strong></div>
             </div>
                 <div class='card-body graycard'>
-                <div style='float:left;bottom:10px;margin-left:20px;position: relative;'>
+                
+                <div class='noterange-group'><div class='noterange title'> Key : 
+                <select class='form-select' id='keyselector' onchange='populateNoteRange()'>
+                <option selected> ALL </option>
+                <option> Amaj/F#min </option>
+                <option> A#maj/Gmin </option>
+                <option> Bmaj/G#min </option>
+                <option> Cmaj/Amin </option>
+                <option> C#maj/A#min </option>
+                <option> Dmaj/Bmin </option>
+                <option> D#maj/Cmin </option>
+                <option> Emaj/C#min </option>
+                <option> Fmaj/Dmin </option>
+                <option> F#maj/D#min </option>
+                <option> Gmaj/Emin </option>
+                <option> G#maj/Fmin </option>
+                </select>
+                 </div>
+                <div class='noterange' id='keynoterange'>";
+
+
+          echo "</div></div>
+          <div margin-left:20px;'>
+
                Chord type : <select class='form-select' style='margin-right:10px'  id='chordtype'>
                   <option selected> maj </option>
                   <option> min </option>
@@ -43,34 +60,31 @@ else $rythm="Folk";
                   <option> maj11 </option>
                   <option> min11 </option>
                 </select>
-                Rythm type : <select class='form-select' id='rythmtype'>
-                <option selected> Folk </option>
+
+                Rythm type : <select class='form-select' id='rythmtype' style='margin-right:10px'>
+                <option> Folk </option>
                 <option> Folk2 </option>
                 <option> Normal </option>
-                <option> Once </option>
+                <option selected> Once </option>
                 </select>
-                </div>
-               <div style='float:right;margin-right:20px;position:relative;bottom:10px'>
-               Percussion : <input type='checkbox' id='percussion' style='margin-right:10px'>
+                
+               Percussion : <select class='form-select' id='percussiontype' style='margin-right:10px'>
+                <option selected> None </option>
+                <option> Metronome </option>
+                <option> Simple </option>
+                </select>
+
                  BPM : <input type='range' min='60' max='200' id='bpmslider'> <span id='bpmcount'> 130</span>
-                </div>
+                </div>";
 
-                <div class='noterange-group'><div class='noterange title'> Chords </div>
-                <div class='noterange'>";
-
-          for ($i=0;$i<7;$i++){
-            echo "<button type='button' id = \"$notes[$i]\"  class='btn btn-light noteButton'>$notes[$i]</button>";
-            if ($notes[$i]<>"B" and $notes[$i]<>"E") echo "<button type='button' id = '$notes[$i]#' class='btn btn-light  noteButton'>$notes[$i]#</button>";
-          }
-
-          echo "</div></div></div><div class='card-footer noBorder'>
+          echo "</div><div class='card-footer noBorder'>
                 <div class='noterange noteplayer' id='playednote'>";
                 if ($chordsToLoad<>"") {
                     $chordsToLoad=explode(",",$chordsToLoad);
                     foreach ($chordsToLoad as $onechord) {
                         $chordName=$onechord;
 
-                        if ($chordName[1]=="d") $chordName=str_replace("d","#",$chordName);
+                        if ($chordName[1]=="X") $chordName=str_replace("X","#",$chordName);
                         if ($chordName[1]=="#") {
                             $chordValue=explode('#',$chordName);
                             $chordValue=$chordValue[0]."# ".$chordValue[1];
@@ -82,7 +96,7 @@ else $rythm="Folk";
 
                        
                         echo "<span class='noteButton2Container'>
-                            <button value='".$chordValue."' class='btn btn-light  noteButton2'>".$chordName."</button>
+                            <button value='".$chordValue."' class='btn btn-light  noteButton2' onclick='playMe(this)'>".$chordName."</button>
                             <button onclick=\"delNoteButton()\" class=\"btn btn-danger btn-sm deleteNoteButton\">X</button>
                         </span>";
                     }
@@ -105,13 +119,8 @@ else $rythm="Folk";
                     <button type='button' id='savechords' onClick='saveChords()' class ='btn btn-light'><i class='fas fa-save'></i></button>
                     <input type='text' size='20' maxlength='19' id='mySaveName' style ='position:relative;top:2px;height:30px;'value='MyChordProgression'>
                 </span>
-                </div></div>
-                 ";
-
+                </div></div>";
 ?>
-
-
-
 <script>
     var player;
     var loopers=[];
@@ -119,21 +128,79 @@ else $rythm="Folk";
     var BPMset=<?php echo $BPM; ?>;
     var rythm = "<?php echo $rythm; ?>";
     var percussion ="<?php echo $percussion; ?>";
+    populateNoteRange();
 
     if (BPMset!=0) {
         document.getElementById("bpmslider").value=BPMset;
         document.getElementById("bpmcount").textContent=BPMset;
     }
 
-    if (rythm!="Folk") {
+    if (rythm!="Once") {
         document.getElementById('rythmtype').value=rythm;
     }
 
     if (percussion!="false") {
-        document.getElementById('percussion').checked=true;
+        document.getElementById('percussiontype').value=percussion;
     }
 
+    function populateNoteRange() {
+        var key = document.getElementById('keyselector').value;
+        var notes=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"];
+        if (key=='ALL') {
+            document.getElementById('keynoterange').innerHTML="";
+            for (const element of notes) {
+                var button=document.createElement('BUTTON');
+                button.setAttribute("id",element);
+                button.setAttribute("onclick","addNote(this)");
+                button.innerHTML=element;
+                button.classList.add('btn','btn-light','noteButton');
+                document.getElementById('keynoterange').appendChild(button);
+            }
+        }
+        else {
+            if (key[1]=="#") {
+                key=key[0]+key[1];
+            }
+            else {
+                key=key[0];
+            }
+            var notesNb=[];
+            var firstLetter = notes.indexOf(key);
+            var firstnote = firstLetter;
+            var secondnote=firstnote+2;
+            var thirdnote=secondnote+2;
+            var fourthnote=thirdnote+1;
+            var fifthnote=fourthnote+2;
+            var sixthnote=fifthnote+2;
+            var seventhnote=sixthnote+2;
 
+            /*if (notes[seventhnote%12][0]==notes[firstnote%12][0]) {
+                console.log ("c pareil");
+                seventhnote=seventhnote-1;
+            }*/
+
+            notesNb.push(firstnote);
+            notesNb.push(secondnote);
+            notesNb.push(thirdnote);
+            notesNb.push(fourthnote);
+            notesNb.push(fifthnote);
+            notesNb.push(sixthnote);
+            notesNb.push(seventhnote);
+
+            document.getElementById('keynoterange').innerHTML="";
+
+            for (const element of notesNb) {
+                var button=document.createElement('BUTTON');
+                button.setAttribute("id",notes[element%12]);
+                button.setAttribute("onclick","addNote(this)");
+                button.innerHTML=notes[element%12];
+                button.classList.add('btn','btn-light','noteButton3');
+
+                document.getElementById('keynoterange').appendChild(button);
+            }
+        }
+
+    }
 
     function saveChords() {
 
@@ -147,12 +214,12 @@ else $rythm="Folk";
 
         var chordsToSave=[];
         var BPM=document.getElementById("bpmslider").value;
-        var percussion=document.getElementById('percussion').checked;
+        var percussion=document.getElementById('percussiontype').value;
         var rythm = document.getElementById('rythmtype').value;
         for (const element of chordTab) {
             chord=element.children[0].value+"";
             chord=chord.replace(' ','');
-            chord=chord.replace('#','d');
+            chord=chord.replace('#','X');
             chordsToSave.push(chord);
         }
         location.href="../fct/saveChords.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm;
@@ -166,8 +233,8 @@ else $rythm="Folk";
         document.getElementById("playednote").innerHTML = "";
         document.getElementById("bpmslider").value=130;
         document.getElementById("bpmcount").textContent=130;
-        document.getElementById("percussion").checked=false;
-        document.getElementById("rythmtype").value="Folk";
+        document.getElementById("percussiontype").value="None";
+        document.getElementById("rythmtype").value="Once";
         document.getElementById("chordtype").value="maj";
     }
 
@@ -329,12 +396,25 @@ else $rythm="Folk";
                 compteur++;
             }
          }
-        if (document.getElementById('percussion').checked==true){
+         var percussiontype=document.getElementById('percussiontype').value;
+        if (percussiontype!="None"){
+            if (percussiontype=="Metronome") {
                 const percu = new Tone.MembraneSynth().toDestination();
                 looper2=new Tone.Loop(function(time) {
-                    percu.triggerAttackRelease("C1", "8n");
+                    percu.triggerAttackRelease("C1", "4n");
                 }, Time).start(0);
-                percu.volume.value=(document.getElementById('volumeKnob').value/10)*2;
+                percu.volume.value=document.getElementById('volumeKnob').value/3;
+            }
+            if (percussiontype=="Simple") {
+                const percu = new Tone.MembraneSynth().toDestination();
+                looper2=new Tone.Loop(function(time) {
+                    percu.triggerAttackRelease("C0", "8n");
+                    percu.triggerAttackRelease("C1", "8n", "+"+Time2);
+                    percu.triggerAttackRelease("C0", "8n", "+"+Time*2);
+                    percu.triggerAttackRelease("C0", "8n", "+"+Time*3);
+                    percu.triggerAttackRelease("C1", "8n", "+"+Time*3.5);
+                }, Time*4).start(0);
+            }
         }
 
         let playing = false;
@@ -490,391 +570,55 @@ else $rythm="Folk";
 
         const synth = new Tone.PolySynth().toDestination();
         synth.triggerAttackRelease(oneChordToPlay,"4n");
+
     }
 
 
-</script>
+    document.getElementById('testsound').onclick=function(){
+        var percussiontype=document.getElementById('percussiontype').value;
+        var Time=new Tone.Time("4n");
+        var Time2=new Tone.Time("8n");
+        if (percussiontype!="None"){
+            if (percussiontype=="Metronome") {
+                const percu = new Tone.MembraneSynth().toDestination();
+                looper2=new Tone.Loop(function(time) {
+                    percu.triggerAttackRelease("C1", "4n");
+                }, Time).start(0);
+            }
+            if (percussiontype=="Rock") {
+                const percu = new Tone.MembraneSynth().toDestination();
+                looper2=new Tone.Loop(function(time) {
+                    percu.triggerAttackRelease("C0", "8n");
+                    percu.triggerAttackRelease("C1", "8n", "+"+Time2);
+                }, Time).start(0);
+            }
+        }
+        Tone.Transport.start();
+    }
 
+    function addNote(button) {
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-     document.getElementById("A").onclick=function(){
+        var ok = button.innerHTML;
         var chordtype=document.getElementById("chordtype").value;
-
         var playednote=document.getElementById("playednote");
-
         var button = document.createElement('BUTTON');
         var buttondiv=document.createElement('SPAN');
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
         button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("A").id;
+        var texty =ok
         var text = document.createTextNode(texty+chordtype);
-
         button.setAttribute("value",texty+" "+chordtype);
         button.appendChild(text);
         buttondel.appendChild(document.createTextNode("X"));
-
         buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
         button.classList.add('btn','btn-light','noteButton2');
         buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-
-    document.getElementById("A#").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("A#").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("B").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("B").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("C").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("C").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("C#").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("C#").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("D").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("D").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    };
-     document.getElementById("D#").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("D#").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("E").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("E").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("F").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("F").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("F#").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("F#").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("G").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("G").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
-        buttondiv.appendChild(button);
-        buttondiv.appendChild(buttondel);
-        playednote.appendChild(buttondiv);
-    } ;
-    document.getElementById("G#").onclick=function(){
-        var chordtype=document.getElementById("chordtype").value;
-
-        var playednote=document.getElementById("playednote");
-
-        var button = document.createElement('BUTTON');
-        var buttondiv=document.createElement('SPAN');
-        var buttondel=document.createElement('BUTTON');
-        buttondel.setAttribute("onclick","delNoteButton()");
-        button.setAttribute("onclick","playMe(this)");
-
-        var texty =document.getElementById("G#").id;
-        var text = document.createTextNode(texty+chordtype);
-
-        button.setAttribute("value",texty+" "+chordtype);
-        button.appendChild(text);
-        buttondel.appendChild(document.createTextNode("X"));
-
-        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
-        button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
-
-
         buttondiv.appendChild(button);
         buttondiv.appendChild(buttondel);
         playednote.appendChild(buttondiv);
     }
+    
+
+
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

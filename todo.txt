@@ -8,7 +8,7 @@
 
 5) drag n drop des accords à jouer []
 
-6) key selector []
+6) key selector [x]
 
 7) being able to name saves[X]
 
@@ -24,7 +24,7 @@
 
 13) better rythm []
 
-14) ability to choose different rythm[]
+14) ability to choose different rythm[x]
 
 15) make button played their chord [x]
 
@@ -32,7 +32,7 @@
 
 17) improve percussions rythm []
 
-18) make different chord instrument available []
+18) make different instrument available []
 
 19) improve different percussion rythm []
 
