@@ -66,6 +66,8 @@ else $rythm="Once";
                 <option> Folk2 </option>
                 <option> Normal </option>
                 <option selected> Once </option>
+                <option> Arpeggio </option>
+                <option> Travis </option>
                 </select>
                 
                Percussion : <select class='form-select' id='percussiontype' style='margin-right:10px'>
@@ -120,6 +122,9 @@ else $rythm="Once";
                     <input type='text' size='20' maxlength='19' id='mySaveName' style ='position:relative;top:2px;height:30px;'value='MyChordProgression'>
                 </span>
                 </div></div>";
+
+
+                echo "<button type='button' class='btn btn-danger' id='testsound'> TEST </button>";
 ?>
 <script>
     var player;
@@ -395,6 +400,30 @@ else $rythm="Once";
                 }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
                 compteur++;
             }
+            if (rythmtype=="Arpeggio"){
+                loopers[compteur] = new Tone.Loop(function(time) {
+                synth.triggerAttackRelease(element[0],Time);
+                synth.triggerAttackRelease(element[1],Time,"+"+Time);
+                synth.triggerAttackRelease(element[2],Time,"+"+(Time*2));
+                synth.triggerAttackRelease(element[3],Time,"+"+(Time*3));
+
+                }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
+                compteur++;
+            }
+            if(rythmtype=='Travis'){
+                loopers[compteur] = new Tone.Loop(function(time) {
+                synth.triggerAttackRelease(element[0],Time);
+                synth.triggerAttackRelease(element[1],Time,"+"+Time*1);
+                synth.triggerAttackRelease(element[2],Time,"+"+(Time*1.5));
+                synth.triggerAttackRelease(element[0],Time,"+"+(Time*2));
+                synth.triggerAttackRelease(element[3],Time,"+"+(Time*2.5));
+                synth.triggerAttackRelease(element[1],Time,"+"+(Time*3));
+                synth.triggerAttackRelease(element[2],Time,"+"+(Time*3.5));
+
+                }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
+                compteur++;
+
+            }
          }
          var percussiontype=document.getElementById('percussiontype').value;
         if (percussiontype!="None"){
@@ -575,25 +604,22 @@ else $rythm="Once";
 
 
     document.getElementById('testsound').onclick=function(){
-        var percussiontype=document.getElementById('percussiontype').value;
         var Time=new Tone.Time("4n");
-        var Time2=new Tone.Time("8n");
-        if (percussiontype!="None"){
-            if (percussiontype=="Metronome") {
-                const percu = new Tone.MembraneSynth().toDestination();
-                looper2=new Tone.Loop(function(time) {
-                    percu.triggerAttackRelease("C1", "4n");
-                }, Time).start(0);
-            }
-            if (percussiontype=="Rock") {
-                const percu = new Tone.MembraneSynth().toDestination();
-                looper2=new Tone.Loop(function(time) {
-                    percu.triggerAttackRelease("C0", "8n");
-                    percu.triggerAttackRelease("C1", "8n", "+"+Time2);
-                }, Time).start(0);
-            }
-        }
+        const synth = new Tone.PolySynth().toDestination();
+        var element =["C3", "E3", "G3", "B3"];
+        loopers = new Tone.Loop(function(time) {
+                synth.triggerAttackRelease(element[0],Time);
+                synth.triggerAttackRelease(element[1],Time,"+"+Time*1);
+                synth.triggerAttackRelease(element[2],Time,"+"+(Time*1.5));
+                synth.triggerAttackRelease(element[0],Time,"+"+(Time*2));
+                synth.triggerAttackRelease(element[3],Time,"+"+(Time*2.5));
+                synth.triggerAttackRelease(element[1],Time,"+"+(Time*3));
+                synth.triggerAttackRelease(element[2],Time,"+"+(Time*3.5));
+
+                }, "1m").start(0);
+
         Tone.Transport.start();
+
     }
 
     function addNote(button) {
