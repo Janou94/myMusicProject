@@ -92,9 +92,8 @@ body {
 .noteButton2Container{
 	display: inline-block;
 	position:relative;
-	width:21%;
-	margin-right:10px;
 	top:10px;
+
 }
 
 .noteButton2ContainerLoad{
@@ -109,22 +108,27 @@ body {
     text-align: left;
 }
 
-.L4 {
+.chordsButton{
 	width:21%;
+	margin-right:10px;
+}
+
+.L4 {
+	width:25%;
 } 
 
 .L3 {
-	width:15.75%;
+	width:18.75%;
 } 
 
 .L2 {
-	width:10.5%;
+	width:12.5%;
 } 
 
 .L1 {
-	width:5.25%;
+	width:6.25%;
 }
 
 .L05 {
-	width:2.625%;
+	width:3.125%;
 }  

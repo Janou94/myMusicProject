@@ -1,6 +1,6 @@
 <?php
 include("../fct/fonctions.php");
-$notes=["A","B","C","D","E","F","G"];
+$notes=["C","D","E","F","G","A","B"];
 writehead();
 if (!isset($_SESSION['login'])) header("Location: ../page/login.php");
 if (isset($_GET['BPM'])) $BPM=$_GET['BPM'];
@@ -99,7 +99,7 @@ else $melodyToLoad="";
                         }
 
                        
-                        echo "<span class='noteButton2Container'>
+                        echo "<span class='noteButton2Container chordsButton'>
                             <button value='".$chordValue."' class='btn btn-light  noteButton2' onclick='playMe(this)'>".$chordName."</button>
                             <button onclick=\"delNoteButton()\" class=\"btn btn-danger btn-sm deleteNoteButton\">X</button>
                         </span>";
@@ -216,7 +216,7 @@ else $melodyToLoad="";
 
     function populateNoteRange() {
         var key = document.getElementById('keyselector').value;
-        var notes=["A","A#","B","C","C#","D","D#","E","F","F#","G","G#"];
+        var notes=["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
         if (key=='ALL') {
             document.getElementById('keynoterange').innerHTML="";
             for (const element of notes) {
@@ -542,7 +542,7 @@ else $melodyToLoad="";
         var noteLength2;
         var noteLengthyplar="0m";
         var multiplicator=0;
-        looper3=new Tone.Loop(function(time) {
+        //looper3=new Tone.Loop(function(time) {
 
                 for (const element2 of melodyTab){
                     var note=element2.children[0].innerHTML+"";
@@ -585,7 +585,7 @@ else $melodyToLoad="";
             }
 
                    
-        }, totalTime*multiplicator).start(0);
+        //}, totalTime*multiplicator).start(0);
 
         looper3.interval=totalTime*multiplicator;
 
@@ -792,7 +792,7 @@ else $melodyToLoad="";
         buttondel.appendChild(document.createTextNode("X"));
         buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
         button.classList.add('btn','btn-light','noteButton2');
-        buttondiv.classList.add('noteButton2Container');
+        buttondiv.classList.add('noteButton2Container','chordsButton');
         buttondiv.appendChild(button);
         buttondiv.appendChild(buttondel);
         playednote.appendChild(buttondiv);

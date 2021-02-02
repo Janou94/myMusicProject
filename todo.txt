@@ -45,18 +45,22 @@
 23) BIG : add melodyMaker [x]
 	23.1) started [x]
 	23.2) loop must function correctly []
-	23.3) a line should ALWAYS contain excatly 16 beats []
+	23.3) a line should ALWAYS contain excatly 16 beats [x]?
 	23.4) add octave selector [x]
 	23.5) distinct volume knob for chords and melody [x]
 	23.6) add saving for melody [x]
-	23.7) add trash for  melody []
+	23.7) add trash for  melody [x]
 	23.8) add silence option []
 
 24) move BPM slider so it is not as confusing with the melody [x]
 
 25) add saving for volume knobs []
 
-26) add volume knob for percussion []
+26) add volume knob for percussion [x]
+
+27) being able to play chords/melody distinctly []
+
+28) add SQL config []
 
 
 
