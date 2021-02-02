@@ -11,16 +11,18 @@ if (isset($_GET['percussion'])) $percussion=$_GET['percussion'];
 else $percussion="None";
 if (isset($_GET['rythm'])) $rythm=$_GET['rythm'];
 else $rythm="Once";
+if (isset($_GET['melody'])) $melodyToLoad=$_GET['melody'];
+else $melodyToLoad="";
 
     echo "<div class='graydisplay'><div align=center> Hello ".$_SESSION['login']." !</div>
     <button type='button' class='btn btn-light' style ='width:80px'onclick='location.href=\"../page/savedChords.php\"'>Load</button><br>
     <button type='button' class='btn btn-light' style='margin-top:10px;width:80px' onclick='location.href=\"../fct/disconnect.php\"'>Logout</button></div>";
 
     echo "<div class='container-fluid' align=center style='display:inline-block;'>
-                <div class='col-sm-8' style='position:relative;top:-140px;' align=center>
+                <div class='col-sm-10' style='position:relative;top:-140px;' align=center>
                     <div class='card hide card-default graycarddefault' align=center style=''>
             <div class='card-header graycard'>
-            <div class='card-title'><strong> Music tab </strong></div>
+            <div class='card-title'><strong> Backing Chords </strong></div>
             </div>
                 <div class='card-body graycard'>
                 
@@ -76,7 +78,7 @@ else $rythm="Once";
                 <option> Simple </option>
                 </select>
 
-                 BPM : <input type='range' min='60' max='200' id='bpmslider'> <span id='bpmcount'> 130</span>
+                
                 </div>";
 
           echo "</div><div class='card-footer noBorder'>
@@ -107,15 +109,78 @@ else $rythm="Once";
           echo "</div>
                 </div>";
 
+        echo "<div class ='card-header graycard><div class='card-title'><strong> Melody </strong></div>";
+        echo "<div class='card-body graycard'>";
+        echo "Note Length : <select id='noteLength' style='margin-right:10px'>";
+        echo "<option  name='noteLength' value='4' id='noteLength' checked> 4/4";
+        echo "<option  name='noteLength' value='3' id='noteLength' style='margin-left:20px'> 3/4";
+        echo "<option  name='noteLength' value='2' id='noteLength' style='margin-left:20px'> 2/4";
+        echo "<option  name='noteLength' value='1' id='noteLength' style='margin-left:20px'> 1/4";
+        echo "<option  name='noteLength' value='05' id='noteLength' style='margin-left:20px'> 1/8";
+
+        echo "</select>";
+        echo "Octave <select id='noteOctave'>";
+        echo "<option value=3 checked> 3";
+        echo "<option value=4 checked> 4";
+        echo "<option value=5 checked> 5";
+        echo "</select>";
+         echo "<div class='noterange' id='melodyRangePlayer'>";
+            for ($i=0;$i<7;$i++) {
+                echo "<button type='button' class='btn btn-light notebutton' onclick='addMelody(this)' value='$notes[$i]'>$notes[$i]</button>";
+                if ($notes[$i]<>"B" and $notes[$i]<>"E") {
+                    echo "<button type='button' class='btn btn-light notebutton' onclick='addMelody(this)' value='$notes[$i]#'>$notes[$i]#</button>";
+                }
+            }
+            echo "</div>";
+        echo "</div>";
+
+        echo "<div class='card-footer graycard'>";
+            echo "<div class='noterange noteplayer' id='melodyRange'>";
+            if ($melodyToLoad<>"") {
+                    $melodyToLoad=explode(",",$melodyToLoad);
+                    foreach ($melodyToLoad as $onechord) {
+                        $chordName=explode('/',$onechord)[1];
+                        $chordLength=explode('/',$onechord)[0];
+                        if ($chordLength=="4")$class="L4";
+                        if ($chordLength=="3")$class="L3";
+                        if ($chordLength=="2")$class="L2";
+                        if ($chordLength=="1")$class="L1";
+                        if ($chordLength=="05")$class="L05";
+
+                        $chordName=str_replace("X","#",$chordName);
+
+                       
+                        echo "<span class='noteButton2Container ".$class."'>
+                            <button value='".$chordLength."' class='btn btn-light noteButton2 ' onclick='playMe(this)'>".$chordName."</button>
+                            <button onclick=\"delNoteButton()\" class=\"btn btn-danger btn-sm deleteNoteButton\">X</button>
+                        </span>";
+                    }
+                }
+       
+            echo "</div>";
+        echo "</div>";
+
+
+
+
+
+        
+        
+
           echo "<div class='card-footer noBorder end'>
                 <span class='players'>
-                <span  style='margin-right:10px'><input class='dial' id='volumeKnob' value='0'></span>
+                <span><span class='volumeLabel'>Percussion</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobPercussion' value='0'></span></span>
+
+               <span><span class='volumeLabel'>Chords</span><span  style='margin-right:10px'><input class='dial' id='volumeKnob' value='0'></span></span>
+
+                <span><span class='volumeLabel'>Melody</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobMelody' value='0'></span></span>
+
                     <button type='button' id='playmusic' style='margin-top:-35px' class='btn btn-light'><i class='fas fa-play'></i></button>
                     <button type='button' id='stopmusic' style='display:none;margin-top:-35px' class='btn btn-light'><i class='fa fa-pause'></i></button>
                 </span>
 
                 
-
+                BPM : <input type='range' min='60' max='200' id='bpmslider'> <span id='bpmcount'> 130</span>
                 <span style ='float:left;margin-left:20px'>
                     <button type='button' id='trashchord' class ='btn btn-light'><i class='fas fa-trash'></i></button>
                     <button type='button' id='savechords' onClick='saveChords()' class ='btn btn-light'><i class='fas fa-save'></i></button>
@@ -124,12 +189,13 @@ else $rythm="Once";
                 </div></div>";
 
 
-                echo "<button type='button' class='btn btn-danger' id='testsound'> TEST </button>";
+                //echo "<button type='button' class='btn btn-danger' id='testsound'> TEST </button>";
 ?>
 <script>
     var player;
     var loopers=[];
-    var looper2;
+    var looper2=[];
+    var looper3=[];
     var BPMset=<?php echo $BPM; ?>;
     var rythm = "<?php echo $rythm; ?>";
     var percussion ="<?php echo $percussion; ?>";
@@ -211,9 +277,10 @@ else $rythm="Once";
 
         var chordTab = document.getElementById('playednote').children;
         var name = document.getElementById('mySaveName').value;
+        var melodyTab=document.getElementById('melodyRange').children;
 
-        if (chordTab.length==0) {
-            alert('Please select at least one chord ! ');
+        if (chordTab.length==0 && melodyTab.length==0) {
+            alert('Please select at least one chord/one note ! ');
             return;
         }
 
@@ -227,7 +294,16 @@ else $rythm="Once";
             chord=chord.replace('#','X');
             chordsToSave.push(chord);
         }
-        location.href="../fct/saveChords.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm;
+
+        var melodyToSave=[];
+        
+        for (const element of melodyTab) {
+            chord=element.children[0].value+"/"+element.children[0].innerHTML;
+            chord=chord.replace(' ','');
+            chord=chord.replace('#','X');
+            melodyToSave.push(chord);
+        }
+        location.href="../fct/saveChords.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm+"&melody[]="+melodyToSave;
     }
 
     function delNoteButton() {
@@ -236,6 +312,7 @@ else $rythm="Once";
 
     document.getElementById("trashchord").onclick=function(){
         document.getElementById("playednote").innerHTML = "";
+        document.getElementById("melodyRange").innerHTML = "";
         document.getElementById("bpmslider").value=130;
         document.getElementById("bpmcount").textContent=130;
         document.getElementById("percussiontype").value="None";
@@ -350,7 +427,7 @@ else $rythm="Once";
             }
             chordsToPlay.push(oneChordToPlay);
         }
-        console.log(chordsToPlay);
+         //console.log(chordsToPlay);
          const synth = new Tone.PolySynth().toDestination();
          var Time=new Tone.Time("4n");
          var Time2=new Tone.Time("8n");
@@ -426,16 +503,14 @@ else $rythm="Once";
             }
          }
          var percussiontype=document.getElementById('percussiontype').value;
+         const percu = new Tone.MembraneSynth().toDestination();
         if (percussiontype!="None"){
             if (percussiontype=="Metronome") {
-                const percu = new Tone.MembraneSynth().toDestination();
                 looper2=new Tone.Loop(function(time) {
                     percu.triggerAttackRelease("C1", "4n");
                 }, Time).start(0);
-                percu.volume.value=document.getElementById('volumeKnob').value/3;
             }
             if (percussiontype=="Simple") {
-                const percu = new Tone.MembraneSynth().toDestination();
                 looper2=new Tone.Loop(function(time) {
                     percu.triggerAttackRelease("C0", "8n");
                     percu.triggerAttackRelease("C1", "8n", "+"+Time2);
@@ -448,18 +523,88 @@ else $rythm="Once";
 
         let playing = false;
         synth.volume.value=document.getElementById('volumeKnob').value/10;
-        Tone.Transport.start();
+        percu.volume.value=document.getElementById('volumeKnobPercussion').value/3;
+
+        var melodyTab=document.getElementById('melodyRange').children;
+        var notesToPlay=[];
+        /*for (const element2 of melodyTab){
+            var note=element2.children[0].innerHTML+"";
+            var noteLength=element2.children[0].value;
+            var toPush=note+" "+noteLength;
+            notesToPlay.push(toPush);
+        }*/
+
+
+
+        var melodyPlayer=new Tone.PolySynth().toDestination();
+
+        var totalTime=new Tone.Time("1m");
+        var noteLength2;
+        var noteLengthyplar="0m";
+        var multiplicator=0;
+        looper3=new Tone.Loop(function(time) {
+
+                for (const element2 of melodyTab){
+                    var note=element2.children[0].innerHTML+"";
+                    var noteLength=element2.children[0].value;
+                    if (noteLength=="4") {
+                        noteLength2='1m';
+                    }
+                    if (noteLength=="3") {
+                        noteLength2='0.75m';
+                    }
+                    if (noteLength=="2") {
+                        noteLength2='2n';
+                    }
+                    if(noteLength=='1'){
+                        noteLength2="4n";
+                    }
+                    if (noteLength=='05'){
+                        noteLength2="8n";
+                    }
+                    melodyPlayer.triggerAttackRelease(note, noteLength2,"+"+totalTime*multiplicator);
+
+                    if (noteLength=="4") {
+                        multiplicator=multiplicator+1;
+                    }
+                    if (noteLength=="3") {
+                        multiplicator=multiplicator+0.75;
+                    }
+                    if (noteLength=="2") {
+                        multiplicator=multiplicator+0.5;
+                    }
+                    if(noteLength=='1'){
+                        multiplicator=multiplicator+0.25;
+                    }
+                    if (noteLength=='05'){
+                        multiplicator=multiplicator+0.125;
+                    }
+                    //totalTime=totalTime+"+"+noteLength2;
+
+                    //console.log(noteLengthyplar);
+            }
+
+                   
+        }, totalTime*multiplicator).start(0);
+
+        looper3.interval=totalTime*multiplicator;
+
+
+        melodyPlayer.volume.value=document.getElementById('volumeKnobMelody').value/10;
+
+        
     }
 
 
     document.getElementById('playmusic').onclick=function(){
-        if (document.getElementById('playednote').children.length==0) {
+       /* if (document.getElementById('playednote').children.length==0) {
             alert ("Please choose a chord");
             return;
-        }
+        }*/
         document.getElementById('stopmusic').style.display='';
         this.style.display='none';
         getChordList();
+        Tone.Transport.start();
     }
 
      document.getElementById('stopmusic').onclick=function(){
@@ -470,6 +615,15 @@ else $rythm="Once";
             element.dispose();
         }
         looper2.dispose();
+        looper3.dispose();
+        melodyPlayer.dispose();
+        for (const element of looper2){
+            element.dispose();
+        }
+        for (const element of looper3){
+            element.dispose();
+        }
+
 
     }
 
@@ -555,7 +709,6 @@ else $rythm="Once";
                 var thirdnote=firstnote+6;
                 var fourthnote=firstnote+10;
                 var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-                console.log(oneChordToPlay);
             }
             if (chordtype=="6"){
                 var firstnote=notes.indexOf(basenote+"3");
@@ -639,6 +792,45 @@ else $rythm="Once";
         buttondel.appendChild(document.createTextNode("X"));
         buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
         button.classList.add('btn','btn-light','noteButton2');
+        buttondiv.classList.add('noteButton2Container');
+        buttondiv.appendChild(button);
+        buttondiv.appendChild(buttondel);
+        playednote.appendChild(buttondiv);
+    }
+
+    function addMelody(hello) {
+        var length=document.getElementById("noteLength").value;
+        var playednote=document.getElementById("melodyRange");
+        var button = document.createElement('BUTTON');
+        var buttondiv=document.createElement('SPAN');
+        var buttondel=document.createElement('BUTTON');
+        var noteOctave=document.getElementById('noteOctave').value;
+
+        buttondel.setAttribute("onclick","delNoteButton()");
+
+        var texty =hello.value;
+        var text = document.createTextNode(texty+noteOctave);
+        button.setAttribute("value",length);
+        button.appendChild(text);
+
+        buttondel.appendChild(document.createTextNode("X"));
+        buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton');
+        button.classList.add('btn','btn-light','noteButton2');
+        if (length=="4") { 
+            buttondiv.classList.add('L4');
+        }
+        if (length=="3") { 
+            buttondiv.classList.add('L3');
+        }
+        if (length=="2") { 
+            buttondiv.classList.add('L2');
+        }
+        if (length=="1") { 
+            buttondiv.classList.add('L1');
+        }
+        if (length=="05") { 
+            buttondiv.classList.add('L05');
+        }
         buttondiv.classList.add('noteButton2Container');
         buttondiv.appendChild(button);
         buttondiv.appendChild(buttondel);

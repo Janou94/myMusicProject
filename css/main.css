@@ -2,13 +2,13 @@
 	background-color:#C5C6C7;
 }
 .card-body {
-	min-height:250px;
 }
 
 .players {
 	float:right;
 	margin-right:20px;
 }
+
 
 .noterange {
 	background-color:#DDDDDD;
@@ -102,3 +102,29 @@ body {
 	width:100%;
 	margin-top:10px;
 }
+
+.volumeLabel{
+	position: relative;
+    top: -38px;
+    text-align: left;
+}
+
+.L4 {
+	width:21%;
+} 
+
+.L3 {
+	width:15.75%;
+} 
+
+.L2 {
+	width:10.5%;
+} 
+
+.L1 {
+	width:5.25%;
+}
+
+.L05 {
+	width:2.625%;
+}  

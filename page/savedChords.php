@@ -19,7 +19,7 @@ echo "<div class='container-fluid' align=center style='display:inline-block;'>
                 <div class='card-body graycard'>";
                 while ($row = mysqli_fetch_array($answer)) {
 					echo "<span class='noteButton2ContainerLoad'>
-					<button type='button' style='' onclick ='location.href=\"index.php?chordsToLoad=".$row['VALUE']."&BPM=".$row["BPM"]."&percussion=".$row['PERCUSSION']."&rythm=".$row['RYTHM']."\"' class ='btn btn-light'>".$row['NAME']."</button>
+					<button type='button' style='' onclick ='location.href=\"index.php?chordsToLoad=".$row['VALUE']."&BPM=".$row["BPM"]."&percussion=".$row['PERCUSSION']."&rythm=".$row['RYTHM']."&melody=".$row['MELODY']."\"' class ='btn btn-light'>".$row['NAME']."</button>
 					<button onclick='location.href=\"../fct/delChords.php?chordsID=".$row['ID']."\"' class=\"btn btn-danger btn-sm deleteNoteButton\" style='float:none;top:-20px;right:15px'>X</button>
 					</span><br>";
 				}
