@@ -2,9 +2,8 @@
 include("../fct/fonctions.php");
 writehead();
 
-$dbc = mysqli_connect("localhost","eBrigade","26071995az","perso");
-$query="Select * from user_chords where ID_USER=".$_SESSION['userId'];
 
+$query="Select * from user_chords where ID_USER=".$_SESSION['userId'];
 $answer=mysqli_query($dbc,$query);
 
 

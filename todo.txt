@@ -60,7 +60,7 @@
 
 27) being able to play chords/melody distinctly []
 
-28) add SQL config []
+28) add SQL config [x]
 
 
 

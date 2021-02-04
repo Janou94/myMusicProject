@@ -1,11 +1,12 @@
 <?php
 
+include("../fct/fonctions.php");
+writehead();
+
 if (isset($_POST['login']) and isset($_POST['password'])) {
 	$login=$_POST['login'];
 	$password=$_POST['password'];
 
-
-	$dbc = mysqli_connect("localhost","eBrigade","26071995az","perso");
 	$query="select * from user_account where login='".$login."'";
 	$answer=mysqli_num_rows(mysqli_query($dbc,$query));
 	if ($answer>0) header("Location: ../page/newAccount.php?error=1");

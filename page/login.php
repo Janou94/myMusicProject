@@ -15,6 +15,7 @@ else $error=0;
                 <div class='card-body graycard'><form action=\"../fct/connect.php\" method='POST'>";
                 if ($success==1) echo "<div style='color:green'>Account created !</div><br>";
                  if ($error==2) echo "<div style='color:red'>Wrong login/password, please try again</div><br>";
+                  if ($error==3) echo "<div style='color:red'>Logout due to inactivity time</div><br>";
 
 
 
