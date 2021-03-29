@@ -58,12 +58,12 @@ body {
 }
 
 .noteButton{
-	margin:3px;width:7.2%;height:38px;
+	margin:3px;width:6.8%;height:38px;
 	font-size:small;
 }
 
 .noteButton3{
-	margin:3px;width:13%;height:38px;
+	margin:3px;width:12%;height:38px;
 	font-size:small;
 }
 
@@ -132,3 +132,7 @@ body {
 .L05 {
 	width:3.125%;
 }  
+
+.faDropdown {
+	font-family: 'FontAwesome';
+}

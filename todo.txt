@@ -54,13 +54,17 @@
 
 24) move BPM slider so it is not as confusing with the melody [x]
 
-25) add saving for volume knobs []
+25) add saving for volume knobs [x]
 
 26) add volume knob for percussion [x]
 
 27) being able to play chords/melody distinctly []
 
 28) add SQL config [x]
+
+29) add import/export fonction [x]
+
+30) add RANDOMIZE []
 
 
 

@@ -29,26 +29,20 @@ function writehead() {
 	echo "<script type='text/javascript' src='../js/rangeslider.min.js'></script>\n";
 	echo "<script type='text/javascript' src='../js/jquery.knob.js'></script>\n";
 
-
-
-
 	//taking care of inactive delay
-	$query='Select LASTSEEN from user_account where ID='.$_SESSION['userId'];
-	$answer=mysqli_fetch_array(mysqli_query($dbc,$query));
-	$lastseen=new DateTime($answer[0], new DateTimeZone('Europe/Paris'));
-	$now=new DateTime("NOW", new DateTimeZone('Europe/Paris'));
+
 	if (explode("/",$_SERVER['PHP_SELF'])[3]<>"login.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"connect.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"disconnect.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"newAccount.php") {
 
-	 	if ($lastseen->diff($now)->format("%i")>60) header("Location: ../fct/disconnect.php?error=3"); 
-
+		$query='select TIME_TO_SEC(TIMEDIFF(NOW(), LASTSEEN))/3600 as TIMEDIFF from user_account where ID='.$_SESSION['userId'];
+		$answer=mysqli_fetch_array(mysqli_query($dbc,$query));
+	 	if ($answer[0]>1) header("Location: ../fct/disconnect.php?error=3"); 
+	 	
 	 	else {
 	 		$query='update user_account set LASTSEEN=NOW() where ID='.$_SESSION['userId'];
 	 		mysqli_query($dbc,$query);
 	 	}
+	 	
  	}
-
-
-
 
  	//taking care of unsets accounts
  	if (explode("/",$_SERVER['PHP_SELF'])[3]<>"login.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"connect.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"disconnect.php" and explode("/",$_SERVER['PHP_SELF'])[3]<>"newAccount.php") {

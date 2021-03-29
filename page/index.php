@@ -14,20 +14,44 @@ if (isset($_GET['rythm'])) $rythm=$_GET['rythm'];
 else $rythm="Once";
 if (isset($_GET['melody'])) $melodyToLoad=$_GET['melody'];
 else $melodyToLoad="";
+if (isset($_GET['volumes'])) $volumes=explode("/",$_GET['volumes']);
+else $volumes=["0","0","0"];
 
     echo "<div class='graydisplay'><div align=center> Hello ".$_SESSION['login']." !</div>
     <button type='button' class='btn btn-light' style ='width:80px'onclick='location.href=\"../page/savedChords.php\"'>Load</button><br>
-    <button type='button' class='btn btn-light' style='margin-top:10px;width:80px' onclick='location.href=\"../fct/disconnect.php\"'>Logout</button></div>";
+    <button type='button' class='btn btn-light' style ='margin-top:10px;width:80px'onclick='location.href=\"importexport.php\"'>Import</button><br>
+    <button type='button' class='btn btn-light' style ='margin-top:10px;width:80px'onclick='exportChords()'>Export</button><br>
+    <button type='button' class='btn btn-warning' style='margin-top:10px;width:80px' onclick='location.href=\"../fct/disconnect.php\"'>Logout</button></div>";
 
     echo "<div class='container-fluid' align=center style='display:inline-block;'>
-                <div class='col-sm-10' style='position:relative;top:-140px;' align=center>
+                <div class='col-sm-10' style='position:relative;top:-236px;' align=center>
                     <div class='card hide card-default graycarddefault' align=center style=''>
             <div class='card-header graycard'>
             <div class='card-title'><strong> Backing Chords </strong></div>
             </div>
-                <div class='card-body graycard'>
-                
-                <div class='noterange-group'><div class='noterange title'> Key : 
+                <div class='card-body graycard'>";
+
+                echo "<span style='float:left;margin-left:20px;position:relative;bottom:7px;'>Chord Length : <select id='chordLength' >";
+                echo "<option  name='chordLength' value='4' id='chordLength' checked> Whole";
+                echo "<option  name='chordLength' value='2' id='chordLength'> Half";
+                echo "</select></span>";
+
+                echo "<span style='float:right;margin-right:10px;position:relative;bottom:7px;'>Chord type : <select class='form-select' style='margin-right:10px'  id='chordtype'>
+                  <option selected> maj </option>
+                  <option> min </option>
+                  <option> maj7 </option>
+                  <option> min7 </option>
+                  <option> dom7 </option>
+                  <option> min7b5 </option>
+                  <option> 6 </option>
+                  <option> maj9 </option>
+                  <option> min9 </option>
+                  <option> maj11 </option>
+                  <option> min11 </option>
+                </select></span>";
+
+
+                echo "<div class='noterange-group'><div class='noterange title'> Key : 
                 <select class='form-select' id='keyselector' onchange='populateNoteRange()'>
                 <option selected> ALL </option>
                 <option> Amaj/F#min </option>
@@ -44,25 +68,13 @@ else $melodyToLoad="";
                 <option> G#maj/Fmin </option>
                 </select>
                  </div>
+
+
                 <div class='noterange' id='keynoterange'>";
 
 
           echo "</div></div>
           <div margin-left:20px;'>
-
-               Chord type : <select class='form-select' style='margin-right:10px'  id='chordtype'>
-                  <option selected> maj </option>
-                  <option> min </option>
-                  <option> maj7 </option>
-                  <option> min7 </option>
-                  <option> dom7 </option>
-                  <option> min7b5 </option>
-                  <option> 6 </option>
-                  <option> maj9 </option>
-                  <option> min9 </option>
-                  <option> maj11 </option>
-                  <option> min11 </option>
-                </select>
 
                 Rythm type : <select class='form-select' id='rythmtype' style='margin-right:10px'>
                 <option> Folk </option>
@@ -114,11 +126,11 @@ else $melodyToLoad="";
         echo "<div class ='card-header graycard><div class='card-title'><strong> Melody </strong></div>";
         echo "<div class='card-body graycard'>";
         echo "Note Length : <select id='noteLength' style='margin-right:10px'>";
-        echo "<option  name='noteLength' value='4' id='noteLength' checked> 4/4";
-        echo "<option  name='noteLength' value='3' id='noteLength' style='margin-left:20px'> 3/4";
-        echo "<option  name='noteLength' value='2' id='noteLength' style='margin-left:20px'> 2/4";
-        echo "<option  name='noteLength' value='1' id='noteLength' style='margin-left:20px'> 1/4";
-        echo "<option  name='noteLength' value='05' id='noteLength' style='margin-left:20px'> 1/8";
+        echo "<option  name='noteLength' value='4' id='noteLength' checked> Whole";
+        //echo "<option  name='noteLength' value='3' id='noteLength' style='margin-left:20px'> 3/4";
+        echo "<option  name='noteLength' value='2' id='noteLength' style='margin-left:20px'> Half";
+        echo "<option  name='noteLength' value='1' id='noteLength' style='margin-left:20px'> Quarter";
+        echo "<option  name='noteLength' value='05' id='noteLength' style='margin-left:20px'> Eigth";
 
         echo "</select>";
         echo "Octave <select id='noteOctave'>";
@@ -133,8 +145,9 @@ else $melodyToLoad="";
                     echo "<button type='button' class='btn btn-light notebutton' onclick='addMelody(this)' value='$notes[$i]#'>$notes[$i]#</button>";
                 }
             }
-            echo "</div>";
             echo "<button type='button' class='btn btn-light notebutton' onClick='addMelody(this)' value='Rest'>Rest</button>";
+            echo "</div>";
+            
         echo "</div>";
 
         echo "<div class='card-footer graycard'>";
@@ -172,11 +185,11 @@ else $melodyToLoad="";
 
           echo "<div class='card-footer noBorder end'>
                 <span class='players'>
-                <span><span class='volumeLabel'>Percussion</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobPercussion' value='0'></span></span>
+                <span><span class='volumeLabel'>Percussion</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobPercussion' value='".$volumes[0]."'></span></span>
 
-               <span><span class='volumeLabel'>Chords</span><span  style='margin-right:10px'><input class='dial' id='volumeKnob' value='0'></span></span>
+               <span><span class='volumeLabel'>Chords</span><span  style='margin-right:10px'><input class='dial' id='volumeKnob' value='".$volumes[1]."'></span></span>
 
-                <span><span class='volumeLabel'>Melody</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobMelody' value='0'></span></span>
+                <span><span class='volumeLabel'>Melody</span><span  style='margin-right:10px'><input class='dial' id='volumeKnobMelody' value='".$volumes[2]."'></span></span>
 
                     <button type='button' id='playmusic' style='margin-top:-35px' class='btn btn-light'><i class='fas fa-play'></i></button>
                     <button type='button' id='stopmusic' style='display:none;margin-top:-35px' class='btn btn-light'><i class='fa fa-pause'></i></button>
@@ -230,6 +243,11 @@ else $melodyToLoad="";
                 button.classList.add('btn','btn-light','noteButton');
                 document.getElementById('keynoterange').appendChild(button);
             }
+            var button=document.createElement('BUTTON');
+            button.setAttribute("onclick","addNote(this)");
+            button.innerHTML="Rest";
+            button.classList.add('btn','btn-light','noteButton');
+            document.getElementById('keynoterange').appendChild(button);
         }
         else {
             if (key[1]=="#") {
@@ -272,11 +290,50 @@ else $melodyToLoad="";
 
                 document.getElementById('keynoterange').appendChild(button);
             }
+            var button=document.createElement('BUTTON');
+            button.setAttribute("onclick","addNote(this)");
+            button.innerHTML="Rest";
+            button.classList.add('btn','btn-light','noteButton');
+            document.getElementById('keynoterange').appendChild(button);
         }
 
     }
 
     function saveChords() {
+
+        var chordTab = document.getElementById('playednote').children;
+        var name = document.getElementById('mySaveName').value;
+        var melodyTab=document.getElementById('melodyRange').children;
+        var volumes=document.getElementById('volumeKnobPercussion').value+"/"+document.getElementById('volumeKnob').value+"/"+document.getElementById('volumeKnobMelody').value;
+
+        if (chordTab.length==0 && melodyTab.length==0) {
+            alert('Please select at least one chord/one note ! ');
+            return;
+        }
+
+        var chordsToSave=[];
+        var BPM=document.getElementById("bpmslider").value;
+        var percussion=document.getElementById('percussiontype').value;
+        var rythm = document.getElementById('rythmtype').value;
+        for (const element of chordTab) {
+            chord=element.children[0].value+"";
+            chord=chord.replace(' ','');
+            chord=chord.replace('#','X');
+            chordsToSave.push(chord);
+        }
+
+        var melodyToSave=[];
+        
+        for (const element of melodyTab) {
+            chord=element.children[0].value+"/"+element.children[0].innerHTML;
+            chord=chord.replace(' ','');
+            chord=chord.replace('#','X');
+            melodyToSave.push(chord);
+        }
+        location.href="../fct/saveChords.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm+"&melody[]="+melodyToSave+"&volumes="+volumes;
+    }
+
+    function exportChords() {
 
         var chordTab = document.getElementById('playednote').children;
         var name = document.getElementById('mySaveName').value;
@@ -306,7 +363,8 @@ else $melodyToLoad="";
             chord=chord.replace('#','X');
             melodyToSave.push(chord);
         }
-        location.href="../fct/saveChords.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm+"&melody[]="+melodyToSave;
+        location.href="importexport.php?chordsToSave[]="+chordsToSave+"&BPM="+BPM+"&name="+name+"&percussion="+percussion+"&rythm="+rythm+"&melody[]="+melodyToSave;
+
     }
 
     function delNoteButton() {
@@ -343,90 +401,96 @@ else $melodyToLoad="";
 
         for (const element of chordTab){
             chord=element.children[0].value+"";
+            chordInner=element.children[0].innerHTML;
+            console.log(chordInner);
             basenote=chord.split(" ")[0];
             chordtype=chord.split(" ")[1];
-
-            if (chordtype=="maj"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+12;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+            if (chordInner=='Rest') {
+                 var oneChordToPlay=["C0","C0","C0","C0"];
             }
-            if (chordtype=="min"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+3;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+12;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-            }
-            if (chordtype=="maj7"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+11;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-            }
-            if (chordtype=="min7"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+3;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+10;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-            }
-            if (chordtype=="dom7"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+10;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-            }
-            if (chordtype=="min7b5"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+3;
-                var thirdnote=firstnote+6;
-                var fourthnote=firstnote+10;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-                console.log(oneChordToPlay);
-            }
-            if (chordtype=="6"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+9;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
-            }
-            if (chordtype=="maj9"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+11;
-                var fifthnote=firstnote+14;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
-            }
-            if (chordtype=="min9"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+3;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+9;
-                var fifthnote=firstnote+14;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
-            }
-            if (chordtype=="maj11"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+4;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+11;
-                var fifthnote=firstnote+17;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
-            }
-            if (chordtype=="min11"){
-                var firstnote=notes.indexOf(basenote+"3");
-                var secondnote=firstnote+3;
-                var thirdnote=firstnote+7;
-                var fourthnote=firstnote+10;
-                var fifthnote=firstnote+17;
-                var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
+            else {
+                if (chordtype=="maj"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+12;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="min"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+3;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+12;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="maj7"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+11;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="min7"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+3;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+10;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="dom7"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+10;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="min7b5"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+3;
+                    var thirdnote=firstnote+6;
+                    var fourthnote=firstnote+10;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                    console.log(oneChordToPlay);
+                }
+                if (chordtype=="6"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+9;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24]];
+                }
+                if (chordtype=="maj9"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+11;
+                    var fifthnote=firstnote+14;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
+                }
+                if (chordtype=="min9"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+3;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+9;
+                    var fifthnote=firstnote+14;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
+                }
+                if (chordtype=="maj11"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+4;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+11;
+                    var fifthnote=firstnote+17;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
+                }
+                if (chordtype=="min11"){
+                    var firstnote=notes.indexOf(basenote+"3");
+                    var secondnote=firstnote+3;
+                    var thirdnote=firstnote+7;
+                    var fourthnote=firstnote+10;
+                    var fifthnote=firstnote+17;
+                    var oneChordToPlay=[notes[firstnote%24],notes[secondnote%24],notes[thirdnote%24],notes[fourthnote%24],notes[fifthnote%24]];
+                }
             }
             chordsToPlay.push(oneChordToPlay);
         }
@@ -451,10 +515,10 @@ else $melodyToLoad="";
             }
             if (rythmtype=="Normal") {
                 loopers[compteur] = new Tone.Loop(function(time) {
-                synth.triggerAttackRelease(element,Time);
-                synth.triggerAttackRelease(element,Time,"+"+Time);
-                synth.triggerAttackRelease(element,Time,"+"+(Time*2));
-                synth.triggerAttackRelease(element,Time,"+"+(Time*3));
+                synth.triggerAttackRelease(element,Time/2);
+                synth.triggerAttackRelease(element,Time/2,"+"+Time);
+                synth.triggerAttackRelease(element,Time/2,"+"+(Time*2));
+                synth.triggerAttackRelease(element,Time/2,"+"+(Time*3));
 
 
                 }, 4*Time*chordsToPlay.length).start(4*Time*compteur);
@@ -805,9 +869,16 @@ else $melodyToLoad="";
         var buttondel=document.createElement('BUTTON');
         buttondel.setAttribute("onclick","delNoteButton()");
         button.setAttribute("onclick","playMe(this)");
-        var texty =ok
-        var text = document.createTextNode(texty+chordtype);
-        button.setAttribute("value",texty+" "+chordtype);
+        var texty =ok;
+        if (texty=='Rest') {
+            var text = document.createTextNode(texty);
+            button.setAttribute("value",texty);
+        }
+        else {
+            var text = document.createTextNode(texty+chordtype);
+            button.setAttribute("value",texty+" "+chordtype);
+        }
+        
         button.appendChild(text);
         buttondel.appendChild(document.createTextNode("X"));
         buttondel.classList.add('btn','btn-danger','btn-sm','deleteNoteButton'); 
